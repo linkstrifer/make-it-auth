@@ -5,28 +5,25 @@ function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-app.get("/", (req, res) => {
-  const { nombre } = req.query;
-  let template = "Hola ";
+app.use(express.urlencoded({ extended: true }));
 
-  if (nombre) {
-    template += capitalize(nombre);
-  } else {
-    template += "desconocido";
-  }
+app.get("/", function (req, res) {
+  res.send(`<form action="/" method="post">
+    <input type="text" name="nombre" />
+    <button type="submit">Enviar</button>
+  </form>`);
+});
 
-  template += "!";
+app.post("/", function (req, res) {
+  const { nombre } = req.body;
 
-  res.send(`<h1>${template}</h1>`);
+  res.send(`<h1>Hola ${capitalize(nombre)}!</h1>`);
 });
 
 app.get("/makers/:nombre", (req, res) => {
   const { nombre } = req.params;
-  let template = "Hola ";
 
-  template += capitalize(nombre) + "!";
-
-  res.send(`<h1>${template}</h1>`);
+  res.send(`<h1>Hola ${capitalize(nombre)}!</h1>`);
 });
 
 app.listen(3000, () => {
