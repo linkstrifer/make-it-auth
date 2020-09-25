@@ -8,12 +8,12 @@ app.engine("html", mustacheExpress());
 app.set("view engine", "mustache");
 app.set("views", __dirname + "/views");
 
-app.get("/", async (req, res) => {
+app.get("/", (req, res) => {
   const { name } = req.query;
 
-  const visitors = await model.createVisitor(name);
-
-  res.render("table.html", { visitors });
+  model.createVisitor(name, (visitors) => {
+    res.render("table.html", { visitors });
+  });
 });
 
 app.listen(3000, () => {

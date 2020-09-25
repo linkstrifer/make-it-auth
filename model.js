@@ -24,7 +24,7 @@ const VisitorSchema = mongoose.Schema({
 
 const VisitorModel = mongoose.model("Visitor", VisitorSchema);
 
-async function createVisitor(name) {
+async function createVisitor(name, callback) {
   if (name) {
     await VisitorModel.findOne(
       {
@@ -43,13 +43,19 @@ async function createVisitor(name) {
             name,
           });
         }
+
+        const visitors = await getAllVisitors();
+
+        callback(visitors);
       }
     );
   } else {
     await VisitorModel.create({});
-  }
 
-  return await getAllVisitors();
+    const visitors = await getAllVisitors();
+
+    callback(visitors);
+  }
 }
 
 async function getAllVisitors() {
