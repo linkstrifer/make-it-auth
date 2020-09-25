@@ -1,35 +1,19 @@
 const express = require("express");
-const mongoose = require("mongoose");
-
+const mustacheExpress = require("mustache-express");
+const model = require("./model");
 const app = express();
 
-mongoose.connect(process.env.MONGODB_URL || "mongodb://localhost:27017/test", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+app.engine("html", mustacheExpress());
 
-mongoose.connection.on("error", function (err) {
-  if (err) {
-    return console.error(err);
-  }
-});
+app.set("view engine", "mustache");
+app.set("views", __dirname + "/views");
 
-const VisitorSchema = mongoose.Schema({
-  date: Date,
-  name: String,
-});
-
-const VisitorModel = mongoose.model("Visitor", VisitorSchema);
-
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   const { name } = req.query;
 
-  VisitorModel.create({
-    date: new Date(),
-    name: name ? name : "Anónimo",
-  });
+  const visitors = await model.createVisitor(name);
 
-  res.send("<h1>El visitante fue almacenado con éxito</h1>");
+  res.render("table.html", { visitors });
 });
 
 app.listen(3000, () => {
