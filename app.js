@@ -5,7 +5,6 @@ const model = require("./model");
 
 const app = express();
 
-app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.engine("html", mustacheExpress());
@@ -17,6 +16,10 @@ app.get("/", async (req, res) => {
   const visitors = await model.getAllVisitors();
 
   res.render("table.html", { visitors });
+});
+
+app.get("/register", (req, res) => {
+  res.render("register.html", {});
 });
 
 app.post("/register", (req, res) => {
