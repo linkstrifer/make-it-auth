@@ -12,50 +12,21 @@ mongoose.connection.on("error", function (err) {
 });
 
 const VisitorSchema = mongoose.Schema({
-  name: {
-    type: String,
-    default: "Anónimo",
-  },
-  count: {
-    type: Number,
-    default: 1,
-  },
+  name: String,
+  email: String,
+  password: String,
 });
 
 const VisitorModel = mongoose.model("Visitor", VisitorSchema);
 
-async function createVisitor(name, callback) {
-  if (name) {
-    await VisitorModel.findOne(
-      {
-        name,
-      },
-      async function (err, visitor) {
-        if (err) {
-          return console.error(err);
-        }
+async function createVisitor(user, callback) {
+  VisitorModel.create(user, function (err) {
+    if (err) {
+      return console.error(err);
+    }
 
-        if (visitor) {
-          visitor.count = visitor.count + 1;
-          await visitor.save();
-        } else {
-          await VisitorModel.create({
-            name,
-          });
-        }
-
-        const visitors = await getAllVisitors();
-
-        callback(visitors);
-      }
-    );
-  } else {
-    await VisitorModel.create({});
-
-    const visitors = await getAllVisitors();
-
-    callback(visitors);
-  }
+    callback();
+  });
 }
 
 async function getAllVisitors() {
@@ -70,4 +41,5 @@ async function getAllVisitors() {
 
 module.exports = {
   createVisitor,
+  getAllVisitors,
 };
