@@ -21,9 +21,14 @@ app.set("views", __dirname + "/views");
 
 app.get("/", async (req, res) => {
   const { userId } = req.session;
-  const visitors = await model.getAllVisitors();
 
-  res.render("table.html", { visitors, userId });
+  if (!userId) {
+    res.redirect("/login");
+  } else {
+    const visitors = await model.getAllVisitors();
+
+    res.render("table.html", { visitors, userId });
+  }
 });
 
 app.get("/register", (req, res) => {
