@@ -1,4 +1,9 @@
-<a href="/register.html">Register</a>
+{{#userId}}
+<a href="/logout">Logout</a>
+{{/userId}} {{^userId}}
+<a href="/register">Register</a>
+<a href="/login">Login</a>
+{{/userId}}
 
 <table>
   <thead>
